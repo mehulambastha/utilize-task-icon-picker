@@ -1,36 +1,117 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Utilize Assignment Icon Picker
 
-## Getting Started
+## What is the taks about?
 
-First, run the development server:
+A custom icon picker component created from scratch using Next.js, without relying on external or third-party components. The project uses Feather Icons downloaded and stored in the `public/icons/feather` directory.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Install by cloning the repo, 
+```
+git clone https://github.com/mehulambastha/utilize-task-icon-picker.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+And then 
+```bash
+npm install
+``` 
+and then 
+```
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Key Features and Design Choices
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Icon Sourcing
+- Icons sourced from [Feather Icons](https://feathericons.com/)
+- Stored in `public/icons/feather` directory
+- Served via a custom Next.js backend route
 
-## Learn More
+### Backend Implementation
 
-To learn more about Next.js, take a look at the following resources:
+A custom API route dynamically serves SVG icons:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```typescript
+export async function GET() {
+  const iconsPath = path.join(process.cwd(), 'public', 'icons', 'feather');
+  try {
+    const icons = fs.readdirSync(iconsPath);
+    const iconsRoutes = icons
+      .filter(icon => icon.endsWith('.svg'))
+      .map(icon => `/icons/feather/${icon}`);
+    return NextResponse.json({ icons: iconsRoutes })
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Failed to fetch icons." },
+      { status: 500 }
+    )
+  }
+}
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Icon Placement Calculation
 
-## Deploy on Vercel
+Instead of using fixed `rowsPerPage` and `columnsPerPage` props, a dynamic calculation method was implemented:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```typescript
+export const calculateNumberOfIconsPerPage = ({
+  pageWidth,
+  pageHeight,
+  iconWidth,
+  iconHeight,
+  gap = 0
+}: propsForIconsPerPage): number => {
+  let columns = Math.floor((pageWidth - 40) / (iconWidth + gap))
+  const remCol = (pageWidth - 40) % (iconWidth + gap)
+  if (remCol >= iconWidth) {
+    columns += 1
+  }
+  let rows = Math.floor((pageHeight - 80) / (iconHeight + gap))
+  const remRow = (pageHeight - 80) % (iconHeight + gap)
+  if (remRow >= iconWidth) {
+    rows += 1
+  }
+  return columns * rows
+}
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Design Rationale
+
+My approach deviates from providing separate `rowsPerPage` and `columnsPerPage` props because the number of icons is already calculated based on:
+- Picker height and width
+- Icon dimensions
+- Gaps between icons
+
+### Additional Features
+
+- Tooltip implementation showing icon names
+- Modular code structure
+- Responsive icon picker component
+
+## Usage
+
+```tsx
+<IconPicker 
+  iconWidth={32} 
+  iconHeight={32} 
+  pickerHeight={500} 
+  pickerWidth={500} 
+  setCurrentIcon={handleIconChange}
+  setDisplayStatus={togglePicker}
+/>
+```
+
+## Screenshots
+![image](https://github.com/user-attachments/assets/a8e04954-b582-4151-81d9-f33bb8079712)
+
+
+
+![image](https://github.com/user-attachments/assets/ba3e523f-4420-44af-834f-3f8dc71a8997)
+
+### Pagination in action
+![image](https://github.com/user-attachments/assets/653c8a6f-393a-4a26-8504-65abe4417ac1)
+
+
+### After clicking on an icon
+![image](https://github.com/user-attachments/assets/e1cd43db-1d2a-4a7f-bfe8-59dd8cf6d7e4)
+
+
+
