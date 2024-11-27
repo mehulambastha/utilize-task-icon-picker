@@ -83,17 +83,15 @@ const IconPicker = ({ iconWidth, iconHeight, pickerHeight = 500, pickerWidth = 5
         >
           {
             paginatedIcons.map((icon, index) => (
-              <TooltipProvider>
+              <TooltipProvider key={index}>
                 <Tooltip>
                   <TooltipTrigger>
                     <div
-                      key={index}
-                      className='bg-primary-light rounded-sm p-2 hover:scale-125 hover:bg-accent hover:shadow-md duration-100 '
                       style={{
                         width: iconWidth,
                         height: iconHeight
                       }}
-
+                      className='hover:bg-accent hover:scale-125 duration-100 p-1 rounded-md'
                       onClick={() => handleIconSelect(icon)}
                     >
                       <Image width={iconWidth} height={iconHeight} src={`${icon}`} alt={`icon-${icon}-${index}`} className=' w-full h-full' />
@@ -109,14 +107,14 @@ const IconPicker = ({ iconWidth, iconHeight, pickerHeight = 500, pickerWidth = 5
           }
 
         </div>
-        <div className='absolute left-1/2 text-secondary -translate-x-1/2 bottom-1'>
-          <button onClick={handlePrevious} disabled={currentPage === 0} className='disabled:cursor-not-allowed font-extrabold text-2xl mx-2'>
+        <div className='absolute flex gap-2 items-center left-1/2 text-secondary -translate-x-1/2 bottom-1'>
+          <button onClick={handlePrevious} disabled={currentPage === 0} className='disabled:cursor-not-allowed font-extrabold text-2xl'>
             &lt;
           </button>
           <span className='font-bold text-xl'>
             {currentPage + 1}/{Math.ceil(icons.length / iconsPerPage)}
           </span>
-          <button onClick={handleNext} disabled={currentPage + 1 === Math.ceil(icons.length / iconsPerPage)} className='disabled:cursor-not-allowed font-extrabold text-2xl mx-2'>
+          <button onClick={handleNext} disabled={currentPage + 1 === Math.ceil(icons.length / iconsPerPage)} className='disabled:cursor-not-allowed font-extrabold text-2xl'>
             &gt;
           </button>
         </div>
