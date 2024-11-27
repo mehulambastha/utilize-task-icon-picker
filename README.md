@@ -73,6 +73,33 @@ export const calculateNumberOfIconsPerPage = ({
 }
 ```
 
+### Directory structure
+```bash
+├── public
+│   ├── icons
+│   │   └── feather
+│   │       ├── [all the icons here].svg
+├── README.md
+├── src
+│   ├── app
+│   │   ├── api
+│   │   │   └── icons
+│   │   │       └── route.ts
+│   │   ├── components
+│   │   │   ├── IconPicker.tsx
+│   │   │   └── PickerParentComp.tsx
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── util
+│   │       └── helperFunctions.ts
+│   ├── components
+│   │   └── ui
+│   │       └── tooltip.tsx
+│   └── lib
+│       └── utils.ts
+```
+
 ### Design Rationale
 
 My approach deviates from providing separate `rowsPerPage` and `columnsPerPage` props because the number of icons is already calculated based on:
